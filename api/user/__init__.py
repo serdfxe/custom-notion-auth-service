@@ -1,7 +1,19 @@
-from fastapi import APIRouter, Request
+from typing import Annotated
+
+from fastapi import APIRouter, Request, Depends
+
+from core.db.repository import DatabaseRepository
+from core.fastapi.dependencies import get_repository
+
+from app.models.user import User
 
 from .dto import UserResponseDTO, UserCreateDTO
 
+
+UserRepository = Annotated[
+    DatabaseRepository[User],
+    Depends(get_repository(User)),
+]
 
 user_router = APIRouter(prefix="/user", tags=["user"])
 
@@ -10,7 +22,7 @@ user_router = APIRouter(prefix="/user", tags=["user"])
     401: {"description": "Unauthorized. Invalid or missing JWT token."},
     404: {"description": "User not found."}
 })
-def get_user_route(request: Request):
+async def get_user_route(request: Request):
     """
     Get user data. The operation returns the data of the user that is associated with the provided JWT token.
     """
@@ -20,17 +32,20 @@ def get_user_route(request: Request):
     400: {"description": "Bad request. Invalid input data."},
     409: {"description": "Conflict. User already exists."}
 })
-def create_user_route(request: UserCreateDTO):
+async def create_user_route(data: UserCreateDTO, repository: UserRepository):
     """
     Create user. The operation creates new user with provided data.
     """
+    user = await repository.create(data.dict())
+    
+    return UserResponseDTO.from_orm(user)
     
 @user_router.delete("/", responses={
     200: {"description": "User deleted successfully."},
     401: {"description": "Unauthorized. Invalid or missing JWT token."},
     404: {"description": "User not found."}
 })
-def delete_user_route(request: Request):
+async def delete_user_route(request: Request):
     """
     Delete user. The operation deletes user that is associated with the provided JWT token.
     """

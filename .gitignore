@@ -27,3 +27,7 @@ build/
 *.pyo
 *.swp
 .DS_Store
+
+certification/
+certifications/jwt-private.key
+certifications/jwt-public.key

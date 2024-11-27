@@ -35,3 +35,12 @@ class DatabaseRepository(Generic[Model]):
         if expressions:
             query = query.where(*expressions)
         return list(await self.session.scalars(query))
+    
+    async def delete(
+            self,
+            id: uuid.UUID
+    ):
+        user = await self.session.get(self.model, id)
+        if user is not None:
+            await self.session.delete(user)
+            await self.session.commit()

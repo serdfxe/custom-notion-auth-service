@@ -10,7 +10,7 @@ class UserBase(BaseModel):
         from_attributes = True
     
 class UserCreateDTO(UserBase):
-    password_hash: str
+    password: str
     
 class UserResponseDTO(UserBase):
     id: UUID

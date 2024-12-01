@@ -82,6 +82,7 @@ def verify_token_route(
 
     except Exception as e:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=
+            status.HTTP_401_UNAUTHORIZED,
             detail=f"Invalid or expired token. Error: {str(e)}"
         )

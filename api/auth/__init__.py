@@ -77,8 +77,10 @@ def verify_token_route(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Token payload does not contain 'sub'."
             )
+        
+        response.headers["X-User-Id"] = str(user_id)
 
-        return {"message": "Token is valid.", "user_id": user_id}
+        return {"message": "Token is valid."}
 
     except Exception as e:
         raise HTTPException(

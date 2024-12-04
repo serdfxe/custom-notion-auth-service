@@ -4,13 +4,10 @@ from sqlalchemy.dialects.postgresql import UUID
 from core.db import Base
 from core.db.mixins import TimestampMixin
 
-"""
-Тут создается макет базы данных
-"""
 
 class User(Base, TimestampMixin):
 
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
     email = Column(String, nullable=False, unique=True)
     username = Column(String, nullable=False, unique=True)

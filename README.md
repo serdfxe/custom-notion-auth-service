@@ -8,6 +8,13 @@
 - Сброс и восстановление пароля
 - Генерация и проверка JWT токенов
 
+## Генерация ключей
 
+Для корректной работы сервиса необходимо сгенерировать ключи в папке `/certifications`
+
+```
 openssl genpkey -algorithm RSA -out jwt-private.key
+```
+```
 openssl rsa -pubout -in jwt-private.key -out jwt-public.key
+```

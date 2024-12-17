@@ -1,26 +1,26 @@
-from fastapi import APIRouter, Request, Response, Depends, HTTPException, status
+from typing import Annotated
+from fastapi import APIRouter, Response, Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 
-from sqlalchemy.ext.asyncio import AsyncSession
+from core.fastapi.dependencies import get_repository
 
-from .dto import TokenResponseDTO, TokenRequestDTO, TokenDTO
-from core.db.get_session import get_session
+from .dto import TokenResponseDTO, TokenRequestDTO
 from core.db.repository import DatabaseRepository
 from app.models.user import User
-from api.auth.generate_password import validate_password, hash_password
+from api.auth.generate_password import validate_password
 from api.auth.generate_token import JWTService
 
+
 jwt_service = JWTService()
-
-
-async def get_user_repository(session: AsyncSession = Depends(get_session)):
-    return DatabaseRepository(User, session)
-
 
 http_bearer_scheme = HTTPBearer()
 
 auth_router = APIRouter(prefix="/auth", tags=["auth"])
 
+UserRepository = Annotated[
+    DatabaseRepository[User],
+    Depends(get_repository(User)),
+]
 
 @auth_router.post(
     "/token",
@@ -33,7 +33,7 @@ auth_router = APIRouter(prefix="/auth", tags=["auth"])
 )
 async def get_token_route(
     request: TokenRequestDTO,
-    user_repo: DatabaseRepository[User] = Depends(get_user_repository),
+    user_repo: UserRepository,
 ):
     """
     Get token. The operation returns JWT token.

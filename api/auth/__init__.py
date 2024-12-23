@@ -22,6 +22,7 @@ UserRepository = Annotated[
     Depends(get_repository(User)),
 ]
 
+
 @auth_router.post(
     "/token",
     response_model=TokenResponseDTO,
